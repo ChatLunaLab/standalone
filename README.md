@@ -1,18 +1,16 @@
 # ChatLuna Standalone
 
-独立版 ChatLuna，并且可使用 Web UI 访问。
-
-基于 Cordis 构建。
+独立版 ChatLuna 后端，基于 Cordis 构建。
 
 ## 项目结构
 
-- [@chatluna/web-ui](./packages/webui/README.MD)
+- [@chatluna/standalone](./packages/webui/README.MD)
 
-  ChatLuna WebUI 实现。
+  ChatLuna 独立版主插件。
 
 - [@chatluna/server](./packages/server/README.MD)
 
-  ChatLuna server 实现。提供给 web-ui 和其他应用的后端。
+  ChatLuna server 实现。提供后端 API 给 Web UI 和其他应用的后端。
 
 ## 致谢
 
@@ -24,4 +22,4 @@
 
 ## 许可证
 
-使用 [MIT](./LICENSE) 许可证发布。
+使用 [AGPL-3.0](./LICENSE) 许可证发布。

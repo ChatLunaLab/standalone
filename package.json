@@ -1,40 +1,51 @@
 {
-  "name": "@cordiverse/boilerplate",
-  "version": "0.0.6",
-  "files": [
-    ".env",
-    "cordis.yml"
-  ],
-  "type": "commonjs",
-  "license": "MIT",
-  "workspaces": [
-    "external/*",
-    "external/*/external/*",
-    "external/*/external/*/packages/*",
-    "external/*/packages/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "yakumo build",
-    "bump": "yakumo version",
-    "dep": "yakumo upgrade",
-    "pub": "yakumo publish",
-    "dev": "cross-env NODE_ENV=development cordis start --import tsx --import yml-register",
-    "start": "cordis start"
-  },
-  "devDependencies": {
-    "@types/node": "^20.14.11",
-    "cross-env": "^7.0.3",
-    "esbuild": "^0.18.20",
-    "tsx": "^4.16.2",
-    "typescript": "^5.6.0-dev.20240719",
-    "yakumo": "^1.0.0-beta.16",
-    "yakumo-esbuild": "^1.0.0-beta.6",
-    "yakumo-tsc": "^1.0.0-beta.4",
-    "yml-register": "^1.2.5"
-  },
-  "dependencies": {
-    "@cordisjs/plugin-hmr": "^0.2.5",
-    "cordis": "^3.17.6"
-  }
+    "name": "@root/chatluna-standalone",
+    "version": "0.0.6",
+    "files": [
+        ".env",
+        "cordis.yml"
+    ],
+    "type": "commonjs",
+    "license": "MIT",
+    "workspaces": [
+        "external/*",
+        "external/*/external/*",
+        "external/*/external/*/packages/*",
+        "external/*/packages/*",
+        "packages/*"
+    ],
+    "scripts": {
+        "build": "yakumo build",
+        "bump": "yakumo version",
+        "dep": "yakumo upgrade",
+        "pub": "yakumo publish",
+        "dev": "cross-env NODE_ENV=development cordis start --import tsx --import yml-register",
+        "start": "cordis start"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.11",
+        "cross-env": "^7.0.3",
+        "esbuild": "^0.18.20",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-config-standard": "^17.1.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-mocha": "^10.4.3",
+        "eslint-plugin-n": "^17.9.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-promise": "^6.4.0",
+        "prettier": "^3.3.3",
+        "tsx": "^4.16.2",
+        "typescript": "^5.6.0-dev.20240719",
+        "yakumo": "^1.0.0-beta.16",
+        "yakumo-esbuild": "^1.0.0-beta.6",
+        "yakumo-tsc": "^1.0.0-beta.4",
+        "yml-register": "^1.2.5"
+    },
+    "dependencies": {
+        "@cordisjs/plugin-hmr": "^0.2.5",
+        "cordis": "^3.17.6"
+    },
+    "repository": "git@github.com:ChatHubLab/standalone.git",
+    "author": "dingyi222666 <dingyi222666@foxmail.com>"
 }

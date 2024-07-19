@@ -26,6 +26,10 @@
       "@minatojs/driver-*": ["external/minato/packages/*/src"],
       "@minatojs/*": ["external/minato/packages/*/src"],
 
+      // chatluna adapters
+      "@chatluna/adapter-*": [
+        "external/chatluna-adapters/packages/*/src",
+      ],
       "*": [
         "external/*/packages/core/src",
         "external/*/src",
