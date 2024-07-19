@@ -4,7 +4,7 @@
 
 ## 项目结构
 
-- [@chatluna/standalone](./packages/webui/README.MD)
+- [@chatluna/standalone](./packages/standalone/README.MD)
 
   ChatLuna 独立版主插件。
 
