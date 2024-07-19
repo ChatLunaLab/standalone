@@ -1,0 +1,16 @@
+- id: 5y3uyg
+  name: yakumo
+  config:
+    pipeline:
+      build:
+        - tsc
+        - esbuild
+        - client
+      clean:
+        - tsc --clean
+- id: pwi1o5
+  name: yakumo-esbuild
+- id: ogkjek
+  name: yakumo-tsc
+- id: i4z3l6
+  name: yakumo/upgrade
