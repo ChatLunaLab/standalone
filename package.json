@@ -5,7 +5,7 @@
         ".env",
         "cordis.yml"
     ],
-    "type": "commonjs",
+    "type": "module",
     "license": "MIT",
     "workspaces": [
         "external/*",
@@ -15,10 +15,13 @@
         "packages/*"
     ],
     "scripts": {
-        "build": "yakumo build",
-        "bump": "yakumo version",
-        "dep": "yakumo upgrade",
-        "pub": "yakumo publish",
+        "yakumo": "node --import tsx/esm scripts/yakumo.js",
+        "build": "yarn yakumo build",
+        "bump": "yarn yakumo version",
+        "dep": "yarn yakumo upgrade",
+        "pub": "yarn yakumo publish",
+        "lint": "yarn eslint --ext=ts --cache",
+        "lint-fix": "yarn eslint --ext=ts --cache --fix",
         "dev": "cross-env NODE_ENV=development cordis start --import tsx --import yml-register",
         "start": "cordis start"
     },
@@ -43,8 +46,12 @@
         "yml-register": "^1.2.5"
     },
     "dependencies": {
+        "@chatluna/standalone": "0.0.1",
         "@cordisjs/plugin-hmr": "^0.2.5",
-        "cordis": "^3.17.6"
+        "@cordisjs/plugin-server": "^0.2.3",
+        "@minatojs/driver-memory": "^3.4.0",
+        "cordis": "^3.17.6",
+        "minato": "^3.4.3"
     },
     "repository": "git@github.com:ChatHubLab/standalone.git",
     "author": "dingyi222666 <dingyi222666@foxmail.com>"

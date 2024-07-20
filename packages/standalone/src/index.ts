@@ -2,6 +2,7 @@ import { Context } from 'cordis'
 import { apply as applyCore } from '@chatluna/core'
 import { apply as applyMemory, inject as injectMemory } from '@chatluna/memory'
 import { apply as applyChat, inject as injectChat } from '@chatluna/chat'
+import {} from '@chatluna/service/service'
 import {
     apply as applyService,
     inject as injectService

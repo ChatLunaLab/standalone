@@ -4,9 +4,9 @@
     port: 6140
 - id: 0txz1f
   name: '@cordisjs/plugin-hmr'
-- id: 1n9z0q
-  name: cordis/group
-  config:
-    - id: xh7rpr
-      name: '@cordisjs/plugin-webui'
-   
+- id: 3n9z0q
+  name: minato
+- id: 0jq7zk
+  name: '@minatojs/driver-memory'
+- id: 1z9m0q
+  name: '@chatluna/standalone'

@@ -1,6 +1,6 @@
 {
-    "name": "@chatluna/core",
-    "description": "chatluna core",
+    "name": "@chatluna/standalone",
+    "description": "chatluna standalone",
     "version": "0.0.1",
     "main": "lib/index.cjs",
     "module": "lib/index.mjs",
@@ -44,9 +44,9 @@
         "chatluna"
     ],
     "dependencies": {
+        "@chatluna/chat": "^0.0.1",
         "@chatluna/core": "^0.0.1",
         "@chatluna/memory": "^0.0.1",
-        "@chatluna/chat": "^0.0.1",
         "@chatluna/service": "^0.0.1",
         "cordis": "^3.17.6"
     },
