@@ -49,7 +49,7 @@
         "@chatluna/standalone": "0.0.1",
         "@cordisjs/plugin-hmr": "^0.2.5",
         "@cordisjs/plugin-server": "^0.2.3",
-        "@minatojs/driver-memory": "^3.4.0",
+        "@minatojs/driver-sqlite": "^4.4.1",
         "cordis": "^3.17.6",
         "minato": "^3.4.3"
     },

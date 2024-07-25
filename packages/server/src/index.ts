@@ -4,6 +4,7 @@ import { inject as injectChat } from '@chatluna/chat'
 import {} from '@chatluna/service/service'
 import { inject as injectService } from '@chatluna/service'
 import {} from '@cordisjs/plugin-server'
+import { ChatLunaServerDataBaseService } from '@chatluna/server/database'
 
 /**
  *
@@ -12,10 +13,9 @@ import {} from '@cordisjs/plugin-server'
  * @param ctx parentContext
  */
 export function apply(ctx: Context) {
-    ctx.server.get('/chatluna/model/list', async (koa, next) => {
-        koa.type = 'application/json'
-        koa.status = 200
-        koa.body = JSON.stringify({ hello: 'world' })
+    ctx.plugin(ChatLunaServerDataBaseService)
+    ctx.inject(['chatluna_server_database'], async (ctx) => {
+        // TODO: server here
     })
 }
 

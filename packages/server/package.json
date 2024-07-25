@@ -15,6 +15,11 @@
             "import": "./lib/index.mjs",
             "types": "./lib/index.d.ts"
         },
+        "./database": {
+            "require": "./lib/database/index.cjs",
+            "import": "./lib/database/index.mjs",
+            "types": "./lib/database/index.d.ts"
+        },
         "./package.json": "./package.json"
     },
     "engines": {

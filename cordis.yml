@@ -7,7 +7,9 @@
 - id: 3n9z0q
   name: minato
 - id: 0jq7zk
-  name: '@minatojs/driver-memory'
+  name: '@minatojs/driver-sqlite'
+  config:
+    path: ./data/chatluna.db
 - id: 1z9m0q
   name: '@chatluna/standalone'
 - id: 0jt7zk
