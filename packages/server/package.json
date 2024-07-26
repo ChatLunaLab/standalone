@@ -65,6 +65,10 @@
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0.9",
+        "@types/jsonwebtoken": "^9",
         "@types/useragent": "^2"
+    },
+    "dependencies": {
+        "jsonwebtoken": "^9.0.2"
     }
 }
