@@ -1,5 +1,6 @@
 import { Context, Service } from 'cordis'
 import type {} from 'minato'
+import { ChatLunaAccount } from './types.ts'
 
 export class ChatLunaServerDataBaseService extends Service {
     constructor(ctx: Context) {
@@ -7,11 +8,9 @@ export class ChatLunaServerDataBaseService extends Service {
         this._defineDatabaseModel()
     }
 
-    createAccount(userId: string, username: string, password: string) {
+    createAccount(account: ChatLunaAccount) {
         return this._database.create('chatluna_account', {
-            userId,
-            username,
-            password
+            ...account
         })
     }
 
@@ -107,6 +106,9 @@ export class ChatLunaServerDataBaseService extends Service {
                     type: 'string'
                 },
                 password: {
+                    type: 'string'
+                },
+                role: {
                     type: 'string'
                 }
             },

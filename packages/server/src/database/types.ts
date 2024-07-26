@@ -5,6 +5,7 @@ export interface ChatLunaAccount {
     password: string
     // email
     userId: string
+    role: 'admin' | 'user'
 }
 
 export interface ChatLunaApiKey {
