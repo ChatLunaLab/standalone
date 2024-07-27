@@ -1,6 +1,6 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
-import { createHash } from 'crypto'
+import { sha1 } from '@chatluna/utils'
 
 export function apply(ctx: Context, config: Config) {
     ctx.database.upsert('chatluna_account', [
@@ -12,8 +12,20 @@ export function apply(ctx: Context, config: Config) {
             userId: 'admin'
         }
     ])
-}
 
-function sha1(text: string) {
-    return createHash('sha1').update(text).digest('hex')
+    ctx.server.use(async function (koa, next) {
+        try {
+            return await next()
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            ctx.logger.error(err)
+            if (err?.status === 401) {
+                koa.status = 401
+                koa.body =
+                    'Protected resource, use Authorization header to get access\n'
+            } else {
+                throw err
+            }
+        }
+    })
 }

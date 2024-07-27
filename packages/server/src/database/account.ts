@@ -35,11 +35,17 @@ export class ChatLunaServerDataBaseService extends Service {
         })
     }
 
-    async getApiKey(userId: string) {
+    async getApiKeys(userId: string) {
         const quired = await this._database.get('chatluna_api_key', userId)
 
+        return quired
+    }
+
+    async getApiKey(key: string) {
+        const quired = await this._database.get('chatluna_api_key', key)
+
         if (quired.length > 1) {
-            throw new Error(`Duplicate userId of ${userId}`)
+            throw new Error(`Duplicate key of ${key}`)
         } else if (quired.length === 0) {
             return null
         } else {
@@ -47,8 +53,8 @@ export class ChatLunaServerDataBaseService extends Service {
         }
     }
 
-    async updateApiKey(userId: string, balance: number) {
-        const apiKey = await this.getApiKey(userId)
+    async updateApiKey(userId: string, key: string, balance: number) {
+        const apiKey = await this.getApiKey(key)
 
         if (apiKey === null) {
             throw new Error(`ApiKey of ${userId} not found`)
@@ -57,13 +63,16 @@ export class ChatLunaServerDataBaseService extends Service {
         return this._database.upsert('chatluna_api_key', [
             {
                 userId,
+                key,
                 balance
             }
         ])
     }
 
-    async deleteApiKey(userId: string) {
-        return this._database.remove('chatluna_api_key', userId)
+    async deleteApiKey(key: string) {
+        return this._database.remove('chatluna_api_key', {
+            key
+        })
     }
 
     async deleteAccount(userId: string) {

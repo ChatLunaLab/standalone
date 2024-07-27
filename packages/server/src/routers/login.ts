@@ -1,6 +1,7 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
 import jwt from 'jsonwebtoken'
+import { sha1 } from '@chatluna/utils'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.use(async (koa, next) => {
@@ -51,7 +52,7 @@ export function apply(ctx: Context, config: Config) {
             {
                 userId: account.userId
             },
-            config.rootPassword,
+            sha1(config.rootPassword),
             {
                 expiresIn: '1days'
             }

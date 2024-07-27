@@ -8,6 +8,7 @@ import { ChatLunaServerDataBaseService } from '@chatluna/server/database'
 import { apply as applyRegister } from './routers/register.ts'
 import { apply as applyAdmin } from './routers/admin.ts'
 import { apply as applyLogin } from './routers/login.ts'
+import { apply as applyApiKeys } from './routers/api_key.ts'
 
 /**
  *
@@ -18,9 +19,10 @@ import { apply as applyLogin } from './routers/login.ts'
 export function apply(ctx: Context, config: Config) {
     ctx.plugin(ChatLunaServerDataBaseService)
     ctx.inject(['chatluna_server_database'], async (ctx) => {
-        applyRegister(ctx, config)
         applyAdmin(ctx, config)
+        applyRegister(ctx, config)
         applyLogin(ctx, config)
+        applyApiKeys(ctx, config)
     })
 }
 

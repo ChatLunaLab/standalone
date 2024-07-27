@@ -69,6 +69,8 @@
         "@types/useragent": "^2"
     },
     "dependencies": {
-        "jsonwebtoken": "^9.0.2"
+        "jsonwebtoken": "^9.0.2",
+        "koa-jwt": "^4.0.4",
+        "@chatluna/utils": "^0.0.1"
     }
 }
