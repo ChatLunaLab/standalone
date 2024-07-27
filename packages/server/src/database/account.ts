@@ -83,10 +83,17 @@ export class ChatLunaServerDataBaseService extends Service {
         ])
     }
 
-    async deleteApiKey(key: string) {
-        return this._database.remove('chatluna_api_key', {
-            key
-        })
+    async deleteApiKey(keyId: string, userId?: string) {
+        const queryBuilder = {
+            userId,
+            keyId
+        }
+
+        if (userId === undefined) {
+            delete queryBuilder.userId
+        }
+
+        return this._database.remove('chatluna_api_key', queryBuilder)
     }
 
     async deleteAccount(userId: string) {

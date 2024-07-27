@@ -81,4 +81,48 @@ export function apply(ctx: Context, config: Config) {
             }
         }
     )
+
+    ctx.server.get(
+        `${config.path}/api_key/delete`,
+        jwt({ secret: sha1(config.rootPassword) }),
+        async (koa) => {
+            const { userId } = koa.state.user as {
+                userId: string
+            }
+
+            koa.set('Content-Type', 'application/json')
+
+            try {
+                const { keyId } = koa.request.query as {
+                    keyId: string
+                }
+
+                const result = await ctx.chatluna_server_database.deleteApiKey(
+                    keyId,
+                    userId
+                )
+
+                if (result.removed === 1) {
+                    koa.status = 200
+                    koa.body = JSON.stringify({
+                        code: 0,
+                        message: 'Delete api key successfully.'
+                    })
+                } else {
+                    koa.body = JSON.stringify({
+                        code: 1,
+                        message: 'The api key does not exist.'
+                    })
+                    koa.status = 404
+                }
+            } catch (e) {
+                ctx.logger.error(e)
+                koa.body = JSON.stringify({
+                    code: 1,
+                    message: 'The database has internal error.'
+                })
+                koa.status = 500
+            }
+        }
+    )
 }
