@@ -18,7 +18,11 @@ export function apply(ctx: Context, config: Config) {
             const body = {
                 code: 0,
                 data: apiKeys.map((apiKey) => ({
-                    key: apiKey.key,
+                    // sk-(52)char, need fill 50 **
+                    key:
+                        apiKey.key.substring(0, 10) +
+                        '*'.repeat(apiKey.key.length - 10),
+                    keyId: apiKey.keyId,
                     balance: apiKey.balance
                 }))
             }
@@ -26,6 +30,55 @@ export function apply(ctx: Context, config: Config) {
             koa.set('Content-Type', 'application/json')
             koa.body = JSON.stringify(body)
             koa.status = 200
+        }
+    )
+
+    ctx.server.post(
+        `${config.path}/api_key/create`,
+        jwt({ secret: sha1(config.rootPassword) }),
+        async (koa) => {
+            const { userId } = koa.state.user as {
+                userId: string
+            }
+
+            const body = koa.request.body as {
+                balance?: number
+                expireTime: number
+                supportModels?: string[]
+            }
+
+            koa.set('Content-Type', 'application/json')
+
+            try {
+                const apiKeyValue =
+                    await ctx.chatluna_server_database.randomApiKey()
+
+                // TODO: check balance can't larger than user's balance
+                const apiKey = await ctx.chatluna_server_database.createApiKey(
+                    userId,
+                    apiKeyValue,
+                    body.balance,
+                    new Date(body.expireTime),
+                    body.supportModels
+                )
+
+                koa.status = 200
+                koa.body = JSON.stringify({
+                    code: 0,
+                    data: {
+                        key: apiKey.key,
+                        balance: apiKey.balance,
+                        keyId: apiKey.keyId
+                    }
+                })
+            } catch (e) {
+                ctx.logger.error(e)
+                koa.body = JSON.stringify({
+                    code: 1,
+                    message: 'The database has internal error.'
+                })
+                koa.status = 500
+            }
         }
     )
 }

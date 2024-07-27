@@ -10,8 +10,10 @@ export interface ChatLunaAccount {
 
 export interface ChatLunaApiKey {
     key: string
+    keyId: string
     userId: string
     createdTime: Date
+    expireTime: Date
     balance: number
     supportModels?: string[]
 }

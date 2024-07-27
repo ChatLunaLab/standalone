@@ -1,6 +1,7 @@
 import { Context, Service } from 'cordis'
 import type {} from 'minato'
 import { ChatLunaAccount } from './types.ts'
+import { randomUUID } from 'crypto'
 
 export class ChatLunaServerDataBaseService extends Service {
     constructor(ctx: Context) {
@@ -26,23 +27,36 @@ export class ChatLunaServerDataBaseService extends Service {
         }
     }
 
-    createApiKey(userId: string, key: string, balance: number = 1.0) {
+    createApiKey(
+        userId: string,
+        key: string,
+        balance: number = 1.0,
+        expireTime: Date = new Date(Date.now() + 1000 * 60 * 60 * 24 * 365),
+        supportModels?: string[]
+    ) {
         return this._database.create('chatluna_api_key', {
             userId,
             key,
             createdTime: new Date(),
-            balance
+            expireTime,
+            balance,
+            keyId: randomUUID(),
+            supportModels
         })
     }
 
     async getApiKeys(userId: string) {
-        const quired = await this._database.get('chatluna_api_key', userId)
+        const quired = await this._database.get('chatluna_api_key', {
+            userId
+        })
 
         return quired
     }
 
     async getApiKey(key: string) {
-        const quired = await this._database.get('chatluna_api_key', key)
+        const quired = await this._database.get('chatluna_api_key', {
+            key
+        })
 
         if (quired.length > 1) {
             throw new Error(`Duplicate key of ${key}`)
@@ -80,28 +94,16 @@ export class ChatLunaServerDataBaseService extends Service {
     }
 
     async randomApiKey() {
-        // sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        const buffer = ['sk']
-
-        while (true) {
-            for (let i = 0; i < 32; i++) {
-                buffer.push(
-                    Math.floor(Math.random() * 16)
-                        .toString(16)
-                        .toUpperCase()
-                )
-            }
-
-            const key = buffer.join('-')
-
-            const quired = await this._database.get('chatluna_api_key', { key })
-
-            if (quired.length === 0) {
-                return key
-            }
-
-            buffer.length = 2
+        const characters =
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+        let apiKey = 'sk-' // OpenAI API keys typically start with 'sk-'
+        for (let i = 0; i < 48; i++) {
+            // OpenAI API keys are usually 52 characters long
+            apiKey += characters.charAt(
+                Math.floor(Math.random() * characters.length)
+            )
         }
+        return apiKey
     }
 
     private _defineDatabaseModel() {
@@ -144,10 +146,16 @@ export class ChatLunaServerDataBaseService extends Service {
                 supportModels: {
                     type: 'list',
                     nullable: true
+                },
+                expireTime: {
+                    type: 'date'
+                },
+                keyId: {
+                    type: 'string'
                 }
             },
             {
-                primary: 'userId'
+                primary: 'key'
             }
         )
     }
