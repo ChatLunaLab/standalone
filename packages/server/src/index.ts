@@ -9,6 +9,7 @@ import { apply as applyRegister } from './routers/register.ts'
 import { apply as applyAdmin } from './routers/admin.ts'
 import { apply as applyLogin } from './routers/login.ts'
 import { apply as applyApiKeys } from './routers/api_key.ts'
+import { apply as applyModel } from './routers/model.ts'
 
 /**
  *
@@ -23,6 +24,7 @@ export function apply(ctx: Context, config: Config) {
         applyRegister(ctx, config)
         applyLogin(ctx, config)
         applyApiKeys(ctx, config)
+        applyModel(ctx, config)
     })
 }
 
