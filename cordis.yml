@@ -14,3 +14,9 @@
   name: '@chatluna/standalone'
 - id: 0jt7zk
   name: '@chatluna/server'
+- id: 0t2z3d
+  name: '@chatluna/adapter-openai'
+  config:
+    apiKeys:
+      - - '${{ env.OPENAI_API_KEY }}'
+        - '${{ env.OPENAI_API_ENDPOINT }}'

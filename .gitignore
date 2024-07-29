@@ -32,3 +32,4 @@ yarn.lock
 *.sln
 
 yarn.lock
+cordis.local.yml

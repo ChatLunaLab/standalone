@@ -25,7 +25,22 @@ export function apply(ctx: Context, config: Config) {
         koa.body = JSON.stringify({
             code: 0,
             message: 'success',
-            data: models
+            data: models.map((m) => {
+                const modelInfo = Object.assign({}, m, { platform: undefined })
+                delete modelInfo.platform
+                modelInfo.name = `${m.platform}/${m.name}`
+                modelInfo.type = ((type: ModelType) => {
+                    if (type === ModelType.all) {
+                        return 'any'
+                    } else if (type === ModelType.llm) {
+                        return 'model'
+                    } else if (type === ModelType.embeddings) {
+                        return 'embeddings'
+                    }
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                })(modelInfo.type) as any
+                return modelInfo
+            })
         })
         koa.status = 200
     })
