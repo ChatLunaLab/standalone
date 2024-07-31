@@ -26,33 +26,36 @@
         "start": "cordis start"
     },
     "devDependencies": {
-        "@types/node": "^20.14.11",
+        "@types/node": "^20.16.1",
         "cross-env": "^7.0.3",
         "esbuild": "^0.18.20",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-config-standard": "^17.1.0",
         "eslint-plugin-import": "^2.29.1",
-        "eslint-plugin-mocha": "^10.4.3",
-        "eslint-plugin-n": "^17.9.0",
+        "eslint-plugin-mocha": "^10.5.0",
+        "eslint-plugin-n": "^17.10.2",
         "eslint-plugin-prettier": "^5.2.1",
-        "eslint-plugin-promise": "^6.4.0",
+        "eslint-plugin-promise": "^6.6.0",
         "prettier": "^3.3.3",
-        "tsx": "^4.16.2",
-        "typescript": "^5.6.0-dev.20240719",
-        "yakumo": "^1.0.0-beta.16",
+        "tsx": "^4.18.0",
+        "typescript": "^5.7.0-dev.20240826",
+        "yakumo": "^1.0.0-beta.18",
         "yakumo-esbuild": "^1.0.0-beta.6",
         "yakumo-tsc": "^1.0.0-beta.4",
         "yml-register": "^1.2.5"
     },
     "dependencies": {
         "@chatluna/standalone": "0.0.1",
-        "@cordisjs/plugin-hmr": "^0.2.5",
+        "@cordisjs/plugin-hmr": "^0.2.6",
+        "@cordisjs/plugin-http": "^0.6.2",
+        "@cordisjs/plugin-proxy-agent": "^0.3.3",
         "@cordisjs/plugin-server": "^0.2.3",
-        "@minatojs/driver-sqlite": "^4.4.1",
-        "cordis": "^3.17.6",
-        "minato": "^3.4.3"
+        "@minatojs/driver-sqlite": "^4.5.0",
+        "cordis": "^3.18.0",
+        "minato": "^3.5.1"
     },
     "repository": "git@github.com:ChatHubLab/standalone.git",
-    "author": "dingyi222666 <dingyi222666@foxmail.com>"
+    "author": "dingyi222666 <dingyi222666@foxmail.com>",
+    "packageManager": "yarn@4.3.1+sha512.af78262d7d125afbfeed740602ace8c5e4405cd7f4735c08feb327286b2fdb2390fbca01589bfd1f50b1240548b74806767f5a063c94b67e431aabd0d86f7774"
 }
