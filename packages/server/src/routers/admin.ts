@@ -24,7 +24,8 @@ export function apply(ctx: Context, config: Config) {
                 koa.body =
                     'Protected resource, use Authorization header to get access\n'
             } else {
-                throw err
+                koa.status = 500
+                koa.body = 'Unknown error'
             }
         }
     })
