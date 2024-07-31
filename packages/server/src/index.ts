@@ -10,6 +10,7 @@ import { apply as applyAdmin } from './routers/admin.ts'
 import { apply as applyLogin } from './routers/login.ts'
 import { apply as applyApiKeys } from './routers/api_key.ts'
 import { apply as applyModel } from './routers/model.ts'
+import { apply as applyConversation } from './routers/conversations.ts'
 
 /**
  *
@@ -25,6 +26,12 @@ export function apply(ctx: Context, config: Config) {
         applyLogin(ctx, config)
         applyApiKeys(ctx, config)
         applyModel(ctx, config)
+        applyConversation(ctx, config)
+
+        ctx.logger.success(
+            'server listening at %c',
+            `${ctx.server.selfUrl}${config.path}`
+        )
     })
 }
 
@@ -53,3 +60,5 @@ export const Config: Schema<Config> = Schema.object({
         .description('ChatLuna API 后端的超级管理员密码。')
         .default('admin')
 })
+
+export const name = '@chatluna/server'
