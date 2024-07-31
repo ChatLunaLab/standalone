@@ -40,7 +40,8 @@ export const inject = [
     ...injectMemory,
     ...injectChat,
     ...injectService,
-    'server'
+    'server',
+    'chatluna_conversation'
 ].filter((item, index, self) => self.indexOf(item, 0) === index)
 
 export interface Config {
