@@ -18,6 +18,8 @@
   name: '@cordisjs/plugin-http'
 - id: 4e9z0q
   name: '@cordisjs/plugin-proxy-agent'
+- id: z14z0q
+  name: '@dingyi222666/event-stream'
 - id: 0t2z3d
   name: '@chatluna/adapter-openai'
   config:

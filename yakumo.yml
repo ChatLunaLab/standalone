@@ -13,3 +13,5 @@
   name: yakumo-tsc
 - id: i4z3l6
   name: yakumo/upgrade
+- id: npoduc
+  name: yakumo/run
