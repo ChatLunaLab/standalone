@@ -44,7 +44,6 @@
         "chatluna"
     ],
     "dependencies": {
-        "@chatluna/agent": "^0.0.1",
         "@chatluna/chat": "^0.0.1",
         "@chatluna/core": "^0.0.1",
         "@chatluna/memory": "^0.0.1",

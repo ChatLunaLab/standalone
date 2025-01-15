@@ -52,6 +52,7 @@
         "@chatluna/chat": "^0.0.1",
         "@chatluna/core": "^0.0.1",
         "@chatluna/memory": "^0.0.1",
+        "@chatluna/assisant": "^0.0.1",
         "@chatluna/service": "^0.0.1",
         "@cordisjs/plugin-server": "^0.2.5",
         "cordis": "^3.18.1"

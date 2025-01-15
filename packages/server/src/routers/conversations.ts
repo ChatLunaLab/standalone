@@ -3,12 +3,11 @@ import { Config } from '../index.ts'
 import jwt from 'koa-jwt'
 import { sha1 } from '@chatluna/utils'
 import type {} from '@chatluna/memory/service'
-import { parseRawModelName } from '@chatluna/core/utils'
+import type {} from '@chatluna/assistant/service'
 import {
-    ChatLunaConversationAdditional,
-    ChatLunaConversationTemplate
+    ChatLunaConversationTemplate,
+    ChatLunaConversationUser
 } from '@chatluna/memory/types'
-import { ModelType } from '@chatluna/core/platform'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(
@@ -49,13 +48,13 @@ export function apply(ctx: Context, config: Config) {
                 conversationId: string
             }
 
-            const conversationAdditional =
-                await ctx.chatluna_conversation.resolveConversationAdditional(
+            const conversation =
+                await ctx.chatluna_conversation.resolveUserConversation(
                     conversationId
                 )
             koa.set('Content-Type', 'application/json')
 
-            if (conversationAdditional.userId !== userId) {
+            if (conversation.userId !== userId) {
                 koa.body = JSON.stringify({
                     code: 400,
                     message: 'Permission denied'
@@ -99,10 +98,7 @@ export function apply(ctx: Context, config: Config) {
                 additional: conversationAdditional
             } = koa.request.body as {
                 conversation: ChatLunaConversationTemplate
-                additional: Omit<
-                    ChatLunaConversationAdditional,
-                    'conversationId'
-                >
+                additional: Omit<ChatLunaConversationUser, 'conversationId'>
             }
 
             koa.set('Content-Type', 'application/json')
@@ -116,23 +112,14 @@ export function apply(ctx: Context, config: Config) {
                 return
             }
 
-            const [platform, model] = parseRawModelName(
-                conversationTemplate.model
+            const assistant = ctx.chatluna_assistant.getAssistantById(
+                conversationTemplate.assistantId
             )
 
-            const platformModels = ctx.chatluna_platform.getModels(
-                platform,
-                ModelType.llm
-            )
-
-            if (
-                platformModels.length === 0 ||
-                platformModels.find((modelInfo) => modelInfo.name === model) ==
-                    null
-            ) {
+            if (assistant == null) {
                 koa.body = JSON.stringify({
                     code: 400,
-                    message: `The model ${conversationTemplate.model} is not supported`
+                    message: `The assistant id ${conversationTemplate.assistantId} is not fount`
                 })
                 koa.status = 400
                 return
