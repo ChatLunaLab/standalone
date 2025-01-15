@@ -1,16 +1,12 @@
 import { Context } from 'cordis'
 import { apply as applyCore } from '@chatluna/core'
-import { apply as applyMemory, inject as injectMemory } from '@chatluna/memory'
+import * as memory from '@chatluna/memory'
+import * as assistant from '@chatluna/assistant'
 // import { apply as applyChat, inject as injectChat } from '@chatluna/chat'
-import {
-    apply as applyService,
-    inject as injectService
-} from '@chatluna/service'
+import * as service from '@chatluna/service'
 import type {} from '@cordisjs/plugin-http'
 import type {} from '@cordisjs/plugin-proxy-agent'
 import { ChatLunaChatModel } from '@chatluna/core/model'
-import { ModelType } from '@chatluna/core/platform'
-import { sleep } from '@chatluna/utils'
 
 /**
  *
@@ -21,23 +17,23 @@ import { sleep } from '@chatluna/utils'
 export function apply(ctx: Context) {
     applyCore(ctx)
 
-    ctx.inject(injectMemory, (ctx) => {
-        applyMemory(ctx)
-    })
+    ctx.plugin(memory)
 
-    ctx.inject(injectService, (ctx) => {
-        applyService(ctx)
+    ctx.plugin(assistant)
 
-        ctx.inject(['chatluna'], (ctx) => {
-            ctx.on('ready', async () => {
-                const model = await ctx.chatluna
-                    .createModel('openai/gpt-4o')
-                    .then((model) => model as ChatLunaChatModel)
+    ctx.plugin(service)
 
-                const result = await model.invoke('tell me a joke.')
+    ctx.inject(['chatluna', 'chatluna_platform'], (ctx) => {
+        ctx.on('ready', async () => {
+            await ctx.chatluna_platform.waitPlatform('openai')
 
-                console.log(result)
-            })
+            const model = await ctx.chatluna
+                .createModel('openai/gpt-4o')
+                .then((model) => model as ChatLunaChatModel)
+
+            const result = await model.invoke('tell me a joke.')
+
+            console.log(result)
         })
     })
 }

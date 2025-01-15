@@ -1,6 +1,6 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
-import { ModelType } from '@chatluna/core/platform'
+import { ModelCapability, ModelType } from '@chatluna/core/platform'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(`${config.path}/model/list`, async (koa) => {
@@ -12,14 +12,14 @@ export function apply(ctx: Context, config: Config) {
         koa.set('Access-Control-Allow-Origin', '*')
         koa.set('Content-Type', 'application/json')
 
-        if (ctx.chatluna_server_database.getApiKey(apiKey) == null) {
+        /*  if (ctx.chatluna_server_database.getApiKey(apiKey) == null) {
             koa.body = JSON.stringify({
                 code: 401,
                 message: 'Unauthorized api key'
             })
             koa.status = 401
             return
-        }
+        } */
 
         const models = ctx.chatluna_platform.getAllModels(ModelType.all)
         koa.body = JSON.stringify({
@@ -29,16 +29,14 @@ export function apply(ctx: Context, config: Config) {
                 const modelInfo = Object.assign({}, m, { platform: undefined })
                 delete modelInfo.platform
                 modelInfo.name = `${m.platform}/${m.name}`
-                modelInfo.type = ((type: ModelType) => {
-                    if (type === ModelType.all) {
-                        return 'any'
-                    } else if (type === ModelType.llm) {
-                        return 'model'
-                    } else if (type === ModelType.embeddings) {
-                        return 'embeddings'
-                    }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                modelInfo.type = ModelType[modelInfo.type] as any
+
+                modelInfo.capabilities = modelInfo.capabilities.map(
+                    (c) => ModelCapability[c]
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                })(modelInfo.type) as any
+                ) as any
+
                 return modelInfo
             })
         })

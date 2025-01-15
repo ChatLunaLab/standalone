@@ -14,6 +14,7 @@
   name: '@chatluna/standalone'
 - id: 0jt7zk
   name: '@chatluna/server'
+  disabled: false
 - id: 3j9z0q
   name: '@cordisjs/plugin-http'
 - id: 4e9z0q
