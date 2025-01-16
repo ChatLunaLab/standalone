@@ -8,12 +8,12 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/v1/api_key/list`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
             const apiKeys =
-                await ctx.chatluna_server_database.getApiKeys(userId)
+                await ctx.chatluna_server_database.getApiKeys(bindId)
 
             const body = {
                 code: 0,
@@ -37,8 +37,8 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/v1/api_key/create`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
             const body = koa.request.body as {
@@ -55,7 +55,7 @@ export function apply(ctx: Context, config: Config) {
 
                 // TODO: check balance can't larger than user's balance
                 const apiKey = await ctx.chatluna_server_database.createApiKey(
-                    userId,
+                    bindId,
                     apiKeyValue,
                     body.balance,
                     new Date(body.expireTime),
@@ -86,8 +86,8 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/api_key/delete`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
             koa.set('Content-Type', 'application/json')
@@ -99,7 +99,7 @@ export function apply(ctx: Context, config: Config) {
 
                 const result = await ctx.chatluna_server_database.deleteApiKey(
                     keyId,
-                    userId
+                    bindId
                 )
 
                 if (result.removed === 1) {

@@ -13,7 +13,7 @@ export function apply(ctx: Context, config: Config) {
             const assistants = await ctx.chatluna_conversation.getAllAssistant()
 
             const body = {
-                code: 200,
+                code: 0,
                 data: assistants
             }
 

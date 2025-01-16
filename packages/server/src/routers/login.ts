@@ -35,7 +35,8 @@ export function apply(ctx: Context, config: Config) {
 
         const token = jwt.sign(
             {
-                userId: account.userId
+                userId: account.userId,
+                bindId: account.bindId
             },
             sha1(config.rootPassword),
             {

@@ -14,12 +14,14 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/v1/conversation/list`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
+            console.log('bindId', bindId)
+
             const conversations = await ctx.chatluna_conversation
-                .queryConversationsByUser(userId)
+                .queryConversationsByUser(bindId)
                 .then((conversations) =>
                     conversations.map(([conversation]) => conversation)
                 )
@@ -40,8 +42,8 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/v1/conversation/delete/:id`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
             const conversationId = koa.params.id
@@ -52,7 +54,7 @@ export function apply(ctx: Context, config: Config) {
                 )
             koa.set('Content-Type', 'application/json')
 
-            if (conversation.userId !== userId) {
+            if (conversation.userId !== bindId) {
                 koa.body = JSON.stringify({
                     code: 400,
                     message: 'Permission denied'
@@ -85,10 +87,10 @@ export function apply(ctx: Context, config: Config) {
         `${config.path}/v1/conversation/create`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            // TODO: check model permission for user
+            // TODO: check model permission for user(check when chat)
 
-            const { userId } = koa.state.user as {
-                userId: string
+            const { bindId } = koa.state.user as {
+                bindId: string
             }
 
             const {
@@ -101,14 +103,7 @@ export function apply(ctx: Context, config: Config) {
 
             koa.set('Content-Type', 'application/json')
 
-            if (conversationAdditional.userId !== userId) {
-                koa.body = JSON.stringify({
-                    code: 400,
-                    message: 'Permission denied'
-                })
-                koa.status = 400
-                return
-            }
+            conversationAdditional.userId = bindId
 
             const assistant = await ctx.chatluna_assistant.getAssistantById(
                 conversationTemplate.assistantId

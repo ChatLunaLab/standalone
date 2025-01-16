@@ -12,88 +12,83 @@ export function apply(ctx: Context, config: Config) {
         1000 * 60 * 3
     )
 
-    ctx.server.use(async (koa, next) => {
-        if (koa.path !== `${config.path}/v1/register`) {
-            await next()
-            return
-        }
+    ctx.server.post(
+        `${config.path}/register`,
+        async (koa) => {
+            koa.set('Content-Type', 'application/json')
+            const { publicKey } = koa.request.body as {
+                publicKey?: string
+            }
 
-        koa.set('Content-Type', 'application/json')
-        const { publicKey } = koa.request.body as {
-            publicKey?: string
-        }
+            if (!publicKey) {
+                koa.status = 400
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'missing public key'
+                })
+                return
+            }
 
-        if (!publicKey) {
-            koa.status = 400
+            if (!tempRC4KeyPool[publicKey]) {
+                koa.status = 401
+                koa.body = JSON.stringify({
+                    code: 401,
+                    message: 'invalid public key'
+                })
+            }
+        },
+        async (koa) => {
+            let { email, username, password, publicKey } = koa.request.body as {
+                email: string
+                username: string
+                password: string
+                publicKey: string
+            }
+
+            const privateKey = tempRC4KeyPool[publicKey]
+
+            try {
+                // rsa decrypt
+                password = privateDecrypt(
+                    Buffer.from(privateKey, 'base64'),
+                    Buffer.from(password, 'base64')
+                ).toString('utf-8')
+            } catch (e) {
+                // the password isn't use rsa
+                koa.status = 400
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'invalid password, please use rsa'
+                })
+                ctx.logger.error(e)
+                return
+            }
+
+            try {
+                await ctx.chatluna_server_database.createAccount({
+                    userId: email,
+                    password,
+                    role: 'user',
+                    username,
+                    bindId: email
+                })
+            } catch (e) {
+                // database error
+                koa.status = 500
+                koa.body = JSON.stringify({
+                    code: 500,
+                    message: 'internal error of database'
+                })
+                ctx.logger.error(e)
+                return
+            }
+
+            koa.status = 200
             koa.body = JSON.stringify({
-                code: 400,
-                message: 'missing public key'
+                code: 0
             })
-            return
         }
-
-        if (!tempRC4KeyPool[publicKey]) {
-            koa.status = 401
-            koa.body = JSON.stringify({
-                code: 401,
-                message: 'invalid public key'
-            })
-            return
-        }
-
-        await next()
-    })
-    ctx.server.post(`${config.path}/register`, async (koa) => {
-        let { email, username, password, publicKey } = koa.request.body as {
-            email: string
-            username: string
-            password: string
-            publicKey: string
-        }
-
-        const privateKey = tempRC4KeyPool[publicKey]
-
-        try {
-            // rsa decrypt
-            password = privateDecrypt(
-                Buffer.from(privateKey, 'base64'),
-                Buffer.from(password, 'base64')
-            ).toString('utf-8')
-        } catch (e) {
-            // the password isn't use rsa
-            koa.status = 400
-            koa.body = JSON.stringify({
-                code: 400,
-                message: 'invalid password, please use rsa'
-            })
-            ctx.logger.error(e)
-            return
-        }
-
-        try {
-            await ctx.chatluna_server_database.createAccount({
-                userId: email,
-                password,
-                role: 'user',
-                username,
-                bindId: email
-            })
-        } catch (e) {
-            // database error
-            koa.status = 500
-            koa.body = JSON.stringify({
-                code: 500,
-                message: 'internal error of database'
-            })
-            ctx.logger.error(e)
-            return
-        }
-
-        koa.status = 200
-        koa.body = JSON.stringify({
-            code: 0
-        })
-    })
+    )
 
     ctx.server.get(`${config.path}/v1/generate-register-key`, async (koa) => {
         try {
