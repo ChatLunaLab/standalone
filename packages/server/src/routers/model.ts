@@ -3,7 +3,7 @@ import { Config } from '../index.ts'
 import { ModelCapability, ModelType } from '@chatluna/core/platform'
 
 export function apply(ctx: Context, config: Config) {
-    ctx.server.get(`${config.path}/model/list`, async (koa) => {
+    ctx.server.get(`${config.path}/v1/model/list`, async (koa) => {
         let apiKey = koa.request.headers['Authorization'] as string
         if (apiKey) {
             apiKey = apiKey.replace('Bearer ', '')

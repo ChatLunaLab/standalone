@@ -13,7 +13,7 @@ export function apply(ctx: Context, config: Config) {
     )
 
     ctx.server.use(async (koa, next) => {
-        if (koa.path !== `${config.path}/register`) {
+        if (koa.path !== `${config.path}/v1/register`) {
             await next()
             return
         }
@@ -75,7 +75,8 @@ export function apply(ctx: Context, config: Config) {
                 userId: email,
                 password,
                 role: 'user',
-                username
+                username,
+                bindId: email
             })
         } catch (e) {
             // database error
@@ -95,7 +96,7 @@ export function apply(ctx: Context, config: Config) {
         })
     })
 
-    ctx.server.get(`${config.path}/generate-register-key`, async (koa) => {
+    ctx.server.get(`${config.path}/v1/generate-register-key`, async (koa) => {
         try {
             const { publicKey } = generateKeys()
 

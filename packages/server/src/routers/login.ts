@@ -4,22 +4,7 @@ import jwt from 'jsonwebtoken'
 import { sha1 } from '@chatluna/utils'
 
 export function apply(ctx: Context, config: Config) {
-    ctx.server.use(async (koa, next) => {
-        if (koa.path !== `${config.path}/login`) {
-            await next()
-            return
-        }
-
-        try {
-            await next()
-        } catch (e) {
-            ctx.logger.error(e)
-            koa.status = 500
-            koa.body = 'Internal Server Error'
-        }
-    })
-
-    ctx.server.post(`${config.path}/login`, async (koa) => {
+    ctx.server.post(`${config.path}/v1/login`, async (koa) => {
         const { userId, password } = koa.request.body
 
         const account = await ctx.chatluna_server_database.getAccount(userId)
@@ -54,7 +39,7 @@ export function apply(ctx: Context, config: Config) {
             },
             sha1(config.rootPassword),
             {
-                expiresIn: '1days'
+                expiresIn: '7days'
             }
         )
 

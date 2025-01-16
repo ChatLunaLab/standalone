@@ -5,7 +5,7 @@ import { sha1 } from '@chatluna/utils'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(
-        `${config.path}/api_key/list`,
+        `${config.path}/v1/api_key/list`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
             const { userId } = koa.state.user as {
@@ -20,8 +20,8 @@ export function apply(ctx: Context, config: Config) {
                 data: apiKeys.map((apiKey) => ({
                     // sk-(52)char, need fill 50 **
                     key:
-                        apiKey.key.substring(0, 10) +
-                        '*'.repeat(apiKey.key.length - 10),
+                        apiKey.key.substring(0, 15) +
+                        '*'.repeat(apiKey.key.length - 15),
                     keyId: apiKey.keyId,
                     balance: apiKey.balance
                 }))
@@ -34,7 +34,7 @@ export function apply(ctx: Context, config: Config) {
     )
 
     ctx.server.post(
-        `${config.path}/api_key/create`,
+        `${config.path}/v1/api_key/create`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
             const { userId } = koa.state.user as {

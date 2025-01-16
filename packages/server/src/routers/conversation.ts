@@ -11,7 +11,7 @@ import {
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(
-        `${config.path}/conversation/list`,
+        `${config.path}/v1/conversation/list`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
             const { userId } = koa.state.user as {
@@ -37,16 +37,14 @@ export function apply(ctx: Context, config: Config) {
     )
 
     ctx.server.get(
-        `${config.path}/conversation/delete`,
+        `${config.path}/v1/conversation/delete/:id`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
             const { userId } = koa.state.user as {
                 userId: string
             }
 
-            const { conversationId } = koa.request.query as {
-                conversationId: string
-            }
+            const conversationId = koa.params.id
 
             const conversation =
                 await ctx.chatluna_conversation.resolveUserConversation(
@@ -84,7 +82,7 @@ export function apply(ctx: Context, config: Config) {
     )
 
     ctx.server.post(
-        `${config.path}/conversation/create`,
+        `${config.path}/v1/conversation/create`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
             // TODO: check model permission for user

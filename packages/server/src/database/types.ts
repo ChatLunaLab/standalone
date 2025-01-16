@@ -5,6 +5,8 @@ export interface ChatLunaAccount {
     password: string
     // email
     userId: string
+    // bind to chatluna user id
+    bindId: string
     role: 'admin' | 'user'
 }
 

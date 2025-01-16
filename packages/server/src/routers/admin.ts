@@ -8,6 +8,7 @@ export function apply(ctx: Context, config: Config) {
             username: config.rootUser,
             // sha1(password)
             password: sha1(config.rootPassword),
+            bindId: 'admin',
             role: 'admin',
             userId: 'admin'
         }

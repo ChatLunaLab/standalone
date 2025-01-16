@@ -26,7 +26,7 @@
         "start": "cordis start"
     },
     "devDependencies": {
-        "@types/node": "^20.17.12",
+        "@types/node": "^20.17.14",
         "cross-env": "^7.0.3",
         "esbuild": "^0.18.20",
         "eslint": "^8.57.1",
@@ -35,11 +35,11 @@
         "eslint-plugin-import": "^2.31.0",
         "eslint-plugin-mocha": "^10.5.0",
         "eslint-plugin-n": "^17.15.1",
-        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-prettier": "^5.2.2",
         "eslint-plugin-promise": "^6.6.0",
         "prettier": "^3.4.2",
         "tsx": "^4.19.2",
-        "typescript": "^5.8.0-dev.20250107",
+        "typescript": "^5.8.0-dev.20250116",
         "yakumo": "^1.0.0-beta.20",
         "yakumo-esbuild": "^1.0.0-beta.7",
         "yakumo-tsc": "^1.0.0-beta.5",
@@ -48,9 +48,9 @@
     "dependencies": {
         "@chatluna/standalone": "0.0.1",
         "@cordisjs/plugin-hmr": "^0.2.6",
-        "@cordisjs/plugin-http": "^0.6.2",
+        "@cordisjs/plugin-http": "^0.6.3",
         "@cordisjs/plugin-proxy-agent": "^0.3.3",
-        "@cordisjs/plugin-server": "^0.2.5",
+        "@cordisjs/plugin-server": "0.2.4",
         "@minatojs/driver-sqlite": "^4.6.0",
         "cordis": "^3.18.1",
         "minato": "^3.6.1"
