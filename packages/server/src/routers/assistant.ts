@@ -14,8 +14,7 @@ export function apply(ctx: Context, config: Config) {
 
             const body = {
                 code: 200,
-                data: assistants,
-                message: 'success'
+                data: assistants
             }
 
             koa.set('Content-Type', 'application/json')

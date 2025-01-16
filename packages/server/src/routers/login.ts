@@ -44,8 +44,7 @@ export function apply(ctx: Context, config: Config) {
         )
 
         koa.body = JSON.stringify({
-            code: 200,
-            message: 'success',
+            code: 0,
             data: {
                 token
             }

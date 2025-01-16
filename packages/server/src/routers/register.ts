@@ -91,8 +91,7 @@ export function apply(ctx: Context, config: Config) {
 
         koa.status = 200
         koa.body = JSON.stringify({
-            code: 0,
-            message: 'success'
+            code: 0
         })
     })
 

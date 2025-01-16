@@ -106,12 +106,12 @@ export function apply(ctx: Context, config: Config) {
                     koa.status = 200
                     koa.body = JSON.stringify({
                         code: 0,
-                        message: 'Delete api key successfully.'
+                        message: 'Delete API KEY successfully.'
                     })
                 } else {
                     koa.body = JSON.stringify({
                         code: 1,
-                        message: 'The api key does not exist.'
+                        message: 'The API KEY does not exist.'
                     })
                     koa.status = 404
                 }

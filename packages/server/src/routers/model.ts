@@ -24,7 +24,6 @@ export function apply(ctx: Context, config: Config) {
         const models = ctx.chatluna_platform.getAllModels(ModelType.all)
         koa.body = JSON.stringify({
             code: 0,
-            message: 'success',
             data: models.map((m) => {
                 const modelInfo = Object.assign({}, m, { platform: undefined })
                 delete modelInfo.platform

@@ -110,7 +110,7 @@ export function apply(ctx: Context, config: Config) {
                 return
             }
 
-            const assistant = ctx.chatluna_assistant.getAssistantById(
+            const assistant = await ctx.chatluna_assistant.getAssistantById(
                 conversationTemplate.assistantId
             )
 
@@ -123,6 +123,14 @@ export function apply(ctx: Context, config: Config) {
                 return
             }
 
+            if (conversationAdditional.assistant !== assistant.name) {
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: `The assistant name ${conversationAdditional.assistant} is not match`
+                })
+                koa.status = 400
+            }
+
             try {
                 const conversation =
                     await ctx.chatluna_conversation.createConversation(
@@ -131,9 +139,8 @@ export function apply(ctx: Context, config: Config) {
                     )
 
                 koa.body = JSON.stringify({
-                    code: 200,
-                    data: conversation,
-                    message: 'success'
+                    code: 0,
+                    data: conversation
                 })
                 koa.status = 200
             } catch (e) {
