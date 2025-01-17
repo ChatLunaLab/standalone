@@ -26,6 +26,7 @@
         "start": "cordis start"
     },
     "devDependencies": {
+        "@types/koa__cors": "^5",
         "@types/node": "^20.17.14",
         "cross-env": "^7.0.3",
         "esbuild": "^0.18.20",
@@ -51,6 +52,7 @@
         "@cordisjs/plugin-http": "^0.6.3",
         "@cordisjs/plugin-proxy-agent": "^0.3.3",
         "@cordisjs/plugin-server": "0.2.4",
+        "@koa/cors": "^5.0.0",
         "@minatojs/driver-sqlite": "^4.6.0",
         "cordis": "^3.18.1",
         "minato": "^3.6.1"

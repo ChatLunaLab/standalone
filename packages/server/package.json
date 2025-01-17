@@ -71,6 +71,7 @@
     },
     "dependencies": {
         "@chatluna/utils": "^0.0.1",
+        "@koa/cors": "^5.0.0",
         "jsonwebtoken": "^9.0.2",
         "koa-jwt": "^4.0.4"
     }

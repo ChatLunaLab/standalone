@@ -4,9 +4,8 @@ import { inject as injectChat } from '@chatluna/chat'
 import { inject as injectService } from '@chatluna/service'
 import {} from '@cordisjs/plugin-server'
 import { ChatLunaServerDataBaseService } from '@chatluna/server/database'
-import { apply as applyRegister } from './routers/register.ts'
+import { apply as applyAuth } from './routers/auth.ts'
 import { apply as applyAdmin } from './routers/admin.ts'
-import { apply as applyLogin } from './routers/login.ts'
 import { apply as applyApiKeys } from './routers/api_key.ts'
 import { apply as applyModel } from './routers/model.ts'
 import { apply as applyConversation } from './routers/conversation.ts'
@@ -22,8 +21,7 @@ export function apply(ctx: Context, config: Config) {
     ctx.plugin(ChatLunaServerDataBaseService)
     ctx.inject(['chatluna_server_database'], async (ctx) => {
         applyAdmin(ctx, config)
-        applyRegister(ctx, config)
-        applyLogin(ctx, config)
+        applyAuth(ctx, config)
         applyApiKeys(ctx, config)
         applyModel(ctx, config)
         applyConversation(ctx, config)
