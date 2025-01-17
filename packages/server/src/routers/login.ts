@@ -138,6 +138,7 @@ export function apply(ctx: Context, config: Config) {
                     userId: payload.userId,
                     bindId: payload.bindId,
                     timestamp: Date.now() - 10,
+                    password: payload.password,
                     refresh: true
                 },
                 sha1(config.rootPassword),
