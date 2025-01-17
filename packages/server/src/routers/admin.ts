@@ -19,8 +19,7 @@ export function apply(ctx: Context, config: Config) {
         cors({
             origin: '*',
             exposeHeaders: ['X-refresh-token', 'Authorization'],
-            maxAge: 5,
-            credentials: true
+            maxAge: 5
         })
     )
 

@@ -4,6 +4,7 @@ import { generateKeyPairSync, privateDecrypt } from 'crypto'
 import jwt from 'jsonwebtoken'
 import { sha1 } from '@chatluna/utils'
 import { ChatLunaAccount } from '../database/types.ts'
+import assert from 'assert'
 
 export function apply(ctx: Context, config: Config) {
     let tempRSAKeyPool: Record<string, string> = {}
@@ -149,11 +150,12 @@ export function apply(ctx: Context, config: Config) {
         let account: ChatLunaAccount
         try {
             account = await ctx.chatluna_server_database.getAccount(email)
+            assert(account != null)
         } catch (e) {
             koa.status = 400
             koa.body = JSON.stringify({
                 code: 400,
-                message: 'user not found'
+                message: `user not found for ${email}`
             })
             return
         }
