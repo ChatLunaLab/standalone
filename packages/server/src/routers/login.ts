@@ -49,6 +49,7 @@ export function apply(ctx: Context, config: Config) {
             {
                 userId: account.userId,
                 bindId: account.bindId,
+                password: sha1(account.password),
                 timestamp: Date.now() - 10,
                 refresh: true
             },
@@ -87,12 +88,35 @@ export function apply(ctx: Context, config: Config) {
                 bindId: string
                 timestamp: number
                 refresh: boolean
+                password: string
             }
             if (payload.refresh !== null) {
                 koa.status = 401
                 koa.body = JSON.stringify({
                     code: 401,
                     message: 'refresh_token is not refresh token'
+                })
+                return
+            }
+
+            try {
+                const account = await ctx.chatluna_server_database.getAccount(
+                    payload.userId
+                )
+
+                if (sha1(account.password) !== payload.password) {
+                    koa.status = 401
+                    koa.body = JSON.stringify({
+                        code: 401,
+                        message: 'password is changed'
+                    })
+                    return
+                }
+            } catch (e) {
+                koa.status = 401
+                koa.body = JSON.stringify({
+                    code: 401,
+                    message: 'user not found'
                 })
                 return
             }

@@ -104,6 +104,7 @@ export function apply(ctx: Context, config: Config) {
                     userId: email,
                     bindId: email,
                     refresh: true,
+                    password: sha1(password),
                     timestamp: Date.now() - 10
                 },
                 sha1(config.rootPassword),
