@@ -1,6 +1,8 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
 import { generateKeyPairSync, privateDecrypt } from 'crypto'
+import jwt from 'jsonwebtoken'
+import { sha1 } from '@chatluna/utils'
 
 export function apply(ctx: Context, config: Config) {
     let tempRC4KeyPool: Record<string, string> = {}
@@ -84,8 +86,38 @@ export function apply(ctx: Context, config: Config) {
             }
 
             koa.status = 200
+
+            const accessToken = jwt.sign(
+                {
+                    userId: email,
+                    bindId: email,
+                    timestamp: Date.now()
+                },
+                sha1(config.rootPassword),
+                {
+                    expiresIn: '30m'
+                }
+            )
+
+            const refreshToken = jwt.sign(
+                {
+                    userId: email,
+                    bindId: email,
+                    refresh: true,
+                    timestamp: Date.now() - 10
+                },
+                sha1(config.rootPassword),
+                {
+                    expiresIn: '30d'
+                }
+            )
+
             koa.body = JSON.stringify({
-                code: 0
+                code: 0,
+                data: {
+                    accessToken,
+                    refreshToken
+                }
             })
         }
     )

@@ -33,22 +33,110 @@ export function apply(ctx: Context, config: Config) {
 
         // jsonwebtoken
 
-        const token = jwt.sign(
+        const accessToken = jwt.sign(
             {
                 userId: account.userId,
-                bindId: account.bindId
+                bindId: account.bindId,
+                timestamp: Date.now()
             },
             sha1(config.rootPassword),
             {
-                expiresIn: '7days'
+                expiresIn: '30m'
+            }
+        )
+
+        const refreshToken = jwt.sign(
+            {
+                userId: account.userId,
+                bindId: account.bindId,
+                timestamp: Date.now() - 10,
+                refresh: true
+            },
+            sha1(config.rootPassword),
+            {
+                expiresIn: '30d'
             }
         )
 
         koa.body = JSON.stringify({
             code: 0,
             data: {
-                token
+                accessToken,
+                refreshToken
             }
         })
+    })
+
+    ctx.server.get(`${config.path}/v1/refresh-token`, async (koa) => {
+        let refreshToken = koa.request.headers['refresh_token']
+        if (refreshToken == null || refreshToken instanceof Array) {
+            koa.status = 401
+            koa.body = JSON.stringify({
+                code: 401,
+                message: 'refresh_token not found'
+            })
+            return
+        }
+
+        try {
+            const payload = jwt.verify(
+                refreshToken,
+                sha1(config.rootPassword)
+            ) as {
+                userId: string
+                bindId: string
+                timestamp: number
+                refresh: boolean
+            }
+            if (payload.refresh !== null) {
+                koa.status = 401
+                koa.body = JSON.stringify({
+                    code: 401,
+                    message: 'refresh_token is not refresh token'
+                })
+                return
+            }
+
+            const accessToken = jwt.sign(
+                {
+                    userId: payload.userId,
+                    bindId: payload.bindId,
+                    timestamp: Date.now()
+                },
+                sha1(config.rootPassword),
+                {
+                    expiresIn: '30m'
+                }
+            )
+
+            refreshToken = jwt.sign(
+                {
+                    userId: payload.userId,
+                    bindId: payload.bindId,
+                    timestamp: Date.now() - 10,
+                    refresh: true
+                },
+                sha1(config.rootPassword),
+                {
+                    expiresIn: '30d'
+                }
+            )
+
+            koa.status = 200
+
+            koa.body = JSON.stringify({
+                code: 0,
+                data: {
+                    accessToken,
+                    refreshToken
+                }
+            })
+        } catch (e) {
+            koa.status = 401
+            koa.body = JSON.stringify({
+                code: 401,
+                message: 'refresh_token is invalid'
+            })
+        }
     })
 }
