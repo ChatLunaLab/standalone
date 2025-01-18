@@ -12,6 +12,7 @@
     path: ./data/chatluna.db
 - id: 1z9m0q
   name: '@chatluna/standalone'
+  disabled: false
 - id: 0jt7zk
   name: '@chatluna/server'
   disabled: false

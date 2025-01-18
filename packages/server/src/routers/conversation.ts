@@ -27,9 +27,8 @@ export function apply(ctx: Context, config: Config) {
                 )
 
             const body = {
-                code: 200,
-                data: conversations,
-                message: 'success'
+                code: 0,
+                data: conversations
             }
 
             koa.set('Content-Type', 'application/json')
@@ -68,14 +67,59 @@ export function apply(ctx: Context, config: Config) {
                     conversationId
                 )
                 koa.body = JSON.stringify({
-                    code: 200,
-                    message: 'success'
+                    code: 0
                 })
                 koa.status = 200
             } catch (e) {
                 koa.body = JSON.stringify({
                     code: 400,
                     message: 'Failed to delete conversation'
+                })
+                koa.status = 400
+                ctx.logger.error(e)
+            }
+        }
+    )
+
+    ctx.server.get(
+        `${config.path}/v1/conversation/info/:id`,
+        jwt({ secret: sha1(config.rootPassword) }),
+        async (koa) => {
+            const { bindId } = koa.state.user as {
+                bindId: string
+            }
+
+            const conversationId = koa.params.id
+
+            const conversation =
+                await ctx.chatluna_conversation.resolveUserConversation(
+                    conversationId
+                )
+            koa.set('Content-Type', 'application/json')
+
+            if (conversation.userId !== bindId) {
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'Permission denied'
+                })
+                koa.status = 400
+                return
+            }
+
+            try {
+                const resp =
+                    await ctx.chatluna_conversation.resolveConversation(
+                        conversationId
+                    )
+                koa.body = JSON.stringify({
+                    code: 0,
+                    data: resp
+                })
+                koa.status = 200
+            } catch (e) {
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'Failed to get conversation info'
                 })
                 koa.status = 400
                 ctx.logger.error(e)
