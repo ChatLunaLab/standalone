@@ -15,6 +15,13 @@ export function apply(ctx: Context, config: Config) {
         }
     ])
 
+    if (config.rootUser !== 'admin') {
+        // remove the admin account
+        ctx.database.remove('chatluna_account', {
+            username: 'admin'
+        })
+    }
+
     ctx.server._koa.use(
         cors({
             origin: '*',
