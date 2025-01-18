@@ -82,7 +82,7 @@ export function apply(ctx: Context, config: Config) {
         }
     )
 
-    ctx.server.get(
+    ctx.server.delete(
         `${config.path}/api_key/delete`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {

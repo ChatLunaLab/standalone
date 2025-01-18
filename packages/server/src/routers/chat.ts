@@ -135,15 +135,48 @@ export function apply(ctx: Context, config: Config) {
         }
     )
 
-    ctx.server.post(
+    ctx.server.get(
         `${config.path}/v1/chat/:conversationId/messages`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
-            const assistants = await ctx.chatluna_conversation.getAllAssistant()
+            const conversationId = koa.params.conversationId
+
+            const { bindId } = koa.state.user as {
+                bindId: string
+            }
+
+            let conversationAdditional: ChatLunaConversationUser
+            try {
+                conversationAdditional =
+                    await ctx.chatluna_conversation.resolveUserConversation(
+                        bindId,
+                        conversationId
+                    )
+            } catch (e) {
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'Failed to resolve conversation'
+                })
+                koa.status = 400
+                ctx.logger.error(e)
+                return
+            }
+
+            if (conversationAdditional.userId !== bindId) {
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: 'Permission denied'
+                })
+                koa.status = 400
+                return
+            }
+
+            const messages =
+                await ctx.chatluna_conversation.fetchAllMessages(conversationId)
 
             const body = {
                 code: 0,
-                data: assistants
+                data: messages
             }
 
             koa.set('Content-Type', 'application/json')
