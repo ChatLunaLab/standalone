@@ -35,7 +35,7 @@ export function apply(ctx: Context, config: Config) {
         }
     )
 
-    ctx.server.get(
+    ctx.server.delete(
         `${config.path}/v1/conversation/delete/:id`,
         jwt({ secret: sha1(config.rootPassword) }),
         async (koa) => {
@@ -47,6 +47,7 @@ export function apply(ctx: Context, config: Config) {
 
             const conversation =
                 await ctx.chatluna_conversation.resolveUserConversation(
+                    bindId,
                     conversationId
                 )
             koa.set('Content-Type', 'application/json')
