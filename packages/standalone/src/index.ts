@@ -15,7 +15,7 @@ import { ChatLunaChatModel } from '@chatluna/core/model'
  *
  * @param ctx parentContext
  */
-export function apply(ctx: Context) {
+export function apply(ctx: Context, config: Config) {
     applyCore(ctx)
 
     ctx.plugin(memory)
