@@ -129,6 +129,10 @@ export class ChatLunaServerDataBaseService extends Service {
                 role: {
                     type: 'string'
                 },
+                avatar: {
+                    type: 'string',
+                    nullable: true
+                },
                 bindId: {
                     type: 'string'
                 }

@@ -8,6 +8,7 @@ export interface ChatLunaAccount {
     // bind to chatluna user id
     bindId: string
     role: 'admin' | 'user'
+    avatar?: string
 }
 
 export interface ChatLunaApiKey {

@@ -18,7 +18,7 @@ export function apply(ctx: Context, config: Config) {
     ctx.server._koa.use(
         cors({
             origin: '*',
-            exposeHeaders: ['X-refresh-token', 'Authorization'],
+            exposeHeaders: ['x-refresh-token', 'Authorization'],
             maxAge: 5
         })
     )
@@ -33,7 +33,7 @@ export function apply(ctx: Context, config: Config) {
         )
         koa.set(
             'Access-Control-Allow-Headers',
-            'Content-Type, Authorization, Accept, refresh_token'
+            'Content-Type, Authorization, Accept, x-refresh-token'
         )
 
         try {
@@ -41,10 +41,9 @@ export function apply(ctx: Context, config: Config) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             ctx.logger.error(err)
-            if (err?.status === 401) {
+
+            if (err.message === 'Authentication Error') {
                 koa.status = 401
-                koa.body =
-                    'Protected resource, use Authorization header to get access\n'
             } else {
                 koa.status = 500
                 koa.body = 'Unknown error'
