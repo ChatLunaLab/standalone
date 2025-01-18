@@ -10,6 +10,7 @@ import { apply as applyApiKeys } from './routers/api_key.ts'
 import { apply as applyModel } from './routers/model.ts'
 import { apply as applyConversation } from './routers/conversation.ts'
 import { apply as applyAssistant } from './routers/assistant.ts'
+import { apply as applyChat } from './routers/chat.ts'
 
 /**
  *
@@ -26,6 +27,7 @@ export function apply(ctx: Context, config: Config) {
         applyModel(ctx, config)
         applyConversation(ctx, config)
         applyAssistant(ctx, config)
+        applyChat(ctx, config)
 
         ctx.logger.success(
             'server listening at %c',
