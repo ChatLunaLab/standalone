@@ -36,7 +36,6 @@ export function apply(ctx: Context, config: Config) {
             'Content-Type, Authorization, Accept, refresh_token'
         )
 
-
         try {
             return await next()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

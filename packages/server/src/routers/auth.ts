@@ -1,9 +1,11 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
-import { generateKeyPairSync, privateDecrypt } from 'crypto'
+import { generateKeyPairSync, privateDecrypt, constants } from 'crypto'
 import jwt from 'jsonwebtoken'
 import { sha1 } from '@chatluna/utils'
+import koaJwt from 'koa-jwt'
 import { ChatLunaAccount } from '../database/types.ts'
+
 import assert from 'assert'
 
 export function apply(ctx: Context, config: Config) {
@@ -17,8 +19,8 @@ export function apply(ctx: Context, config: Config) {
     )
 
     ctx.server.post(
-        `${config.path}/register`,
-        async (koa) => {
+        `${config.path}/v1/register`,
+        async (koa, next) => {
             koa.set('Content-Type', 'application/json')
             const { publicKey } = koa.request.body as {
                 publicKey?: string
@@ -40,6 +42,7 @@ export function apply(ctx: Context, config: Config) {
                     message: 'invalid public key'
                 })
             }
+            return next()
         },
         async (koa) => {
             let { email, username, password, publicKey } = koa.request.body as {
@@ -54,9 +57,16 @@ export function apply(ctx: Context, config: Config) {
             try {
                 // rsa decrypt
                 password = privateDecrypt(
-                    Buffer.from(privateKey, 'base64'),
+                    {
+                        key: privateKey,
+                        passphrase: 'top_secret',
+                        oaepHash: 'sha256',
+                        padding: constants.RSA_PKCS1_OAEP_PADDING
+                    },
                     Buffer.from(password, 'base64')
                 ).toString('utf-8')
+
+                password = sha1(password)
             } catch (e) {
                 // the password isn't use rsa
                 koa.status = 400
@@ -70,6 +80,15 @@ export function apply(ctx: Context, config: Config) {
             }
 
             try {
+                if (await ctx.chatluna_server_database.getAccount(email)) {
+                    koa.status = 400
+                    koa.body = JSON.stringify({
+                        code: 400,
+                        message: `user already exists for ${email}`
+                    })
+                    return
+                }
+
                 await ctx.chatluna_server_database.createAccount({
                     userId: email,
                     password,
@@ -305,6 +324,36 @@ export function apply(ctx: Context, config: Config) {
         }
     })
 
+    ctx.server.get(
+        `${config.path}/v1/user/info`,
+        koaJwt({ secret: sha1(config.rootPassword) }),
+        async (koa) => {
+            const { bindId } = koa.state.user as {
+                bindId: string
+            }
+
+            let account: ChatLunaAccount
+            try {
+                account = await ctx.chatluna_server_database.getAccount(bindId)
+
+                assert(account != null)
+            } catch (e) {
+                koa.status = 400
+                koa.body = JSON.stringify({
+                    code: 400,
+                    message: `user not found for ${bindId}`
+                })
+                return
+            }
+
+            koa.status = 200
+            koa.body = JSON.stringify({
+                code: 0,
+                data: account
+            })
+        }
+    )
+
     function generateKeys() {
         const length = Object.keys(tempRSAKeyPool).length
 
@@ -334,7 +383,7 @@ function generateRSAKeys() {
             type: 'pkcs8',
             format: 'pem',
             cipher: 'aes-256-cbc',
-            passphrase: 'top secret'
+            passphrase: 'top_secret'
         }
     })
 }
