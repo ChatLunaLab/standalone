@@ -229,7 +229,6 @@ export function apply(ctx: Context, config: Config) {
 
     ctx.server.get(`${config.path}/v1/refresh-token`, async (koa) => {
         let refreshToken = koa.headers['x-refresh-token']
-        console.log(refreshToken)
         if (refreshToken == null || refreshToken instanceof Array) {
             koa.status = 400
             koa.body = JSON.stringify({

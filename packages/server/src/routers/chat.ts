@@ -103,10 +103,20 @@ export function apply(ctx: Context, config: Config) {
 
             const stream = new PassThrough()
 
+            koa.status = 200
+            koa.body = stream
+
+            const abortSignal = new AbortController()
+
+            koa.req.on('close', () => {
+                abortSignal.abort()
+            })
+
             for await (const chunk of assistant.stream({
                 message: new HumanMessage({
                     content: body.message.content
                 }),
+                signal: abortSignal.signal,
                 /* events: {
                     'llm-used-token'(usedToken) {
                         //
@@ -121,8 +131,7 @@ export function apply(ctx: Context, config: Config) {
 
             stream.write('data: [DONE]\n\n')
 
-            koa.status = 200
-            koa.body = stream
+            stream.end()
         }
     )
 

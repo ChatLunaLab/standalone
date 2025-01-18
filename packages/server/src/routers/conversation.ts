@@ -18,8 +18,6 @@ export function apply(ctx: Context, config: Config) {
                 bindId: string
             }
 
-            console.log('bindId', bindId)
-
             const conversations = await ctx.chatluna_conversation
                 .queryConversationsByUser(bindId)
                 .then((conversations) =>
