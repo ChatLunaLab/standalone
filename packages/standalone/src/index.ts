@@ -1,4 +1,4 @@
-import { Context } from 'cordis'
+import { Context, Schema } from 'cordis'
 import { apply as applyCore } from '@chatluna/core'
 import * as memory from '@chatluna/memory'
 import type {} from '@chatluna/memory/service'
@@ -8,8 +8,6 @@ import * as service from '@chatluna/service'
 import type {} from '@cordisjs/plugin-http'
 import type {} from '@cordisjs/plugin-proxy-agent'
 import { ChatLunaChatModel } from '@chatluna/core/model'
-import { loadPreset } from '@chatluna/core/preset'
-import fs from 'fs/promises'
 
 /**
  *
@@ -37,9 +35,7 @@ export function apply(ctx: Context) {
             ctx.on('ready', async () => {
                 await ctx.chatluna_platform.waitPlatform('openai')
 
-                ctx.chatluna_preset.addPreset(
-                    loadPreset(await fs.readFile('雌小鬼.yml', 'utf-8'))
-                )
+                await ctx.chatluna_preset.init(config.presetDir)
 
                 try {
                     await ctx.chatluna_conversation.getAssistantByName('雌小鬼')
@@ -62,3 +58,13 @@ export function apply(ctx: Context) {
         }
     )
 }
+
+export interface Config {
+    presetDir: string
+}
+
+export const Config: Schema<Config> = Schema.object({
+    presetDir: Schema.string()
+        .description('预设所在目录。')
+        .default('./data/chatluna/preset')
+})

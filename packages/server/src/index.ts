@@ -55,13 +55,13 @@ export interface Config {
 
 export const Config: Schema<Config> = Schema.object({
     path: Schema.string()
-        .description('ChatLuna API 后端的监听地址。')
+        .description('ChatLuna 的监听地址。')
         .default('/chatluna'),
     rootUser: Schema.string()
-        .description('ChatLuna API 后端的超级管理员用户名。')
+        .description('ChatLuna 的超级管理员用户名。')
         .default('admin'),
     rootPassword: Schema.string()
-        .description('ChatLuna API 后端的超级管理员密码。')
+        .description('ChatLuna 的超级管理员密码。')
         .default('admin')
 })
 
