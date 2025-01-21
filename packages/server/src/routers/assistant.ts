@@ -63,7 +63,7 @@ export function apply(ctx: Context, config: Config) {
                 if (
                     assistant != null &&
                     !assistant.shared &&
-                    assistant.ownId !== bindId
+                    assistant.ownerId !== bindId
                 ) {
                     koa.body = JSON.stringify({
                         code: 400,

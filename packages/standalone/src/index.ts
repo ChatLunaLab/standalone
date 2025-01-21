@@ -45,7 +45,9 @@ export function apply(ctx: Context, config: Config) {
                         preset: '雌小鬼',
                         model: 'openai/gpt-4o-mini',
                         shared: true,
-                        ownId: 'admin'
+                        author: 'dingyi',
+                        avatar: 'https://tse1.mm.bing.net/th?id=OIP.CHN4ai_OXSMvVUJu5RuSGQHaH-&rs=1&pid=ImgDetMain',
+                        ownerId: 'admin'
                     })
                 }
 
