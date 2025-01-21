@@ -43,7 +43,9 @@ export function apply(ctx: Context, config: Config) {
                     await ctx.chatluna_conversation.createAssistant({
                         name: '雌小鬼',
                         preset: '雌小鬼',
-                        model: 'openai/gpt-4o-mini'
+                        model: 'openai/gpt-4o-mini',
+                        shared: true,
+                        ownId: 'admin'
                     })
                 }
 

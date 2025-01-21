@@ -149,6 +149,7 @@ export function apply(ctx: Context, config: Config) {
             conversationAdditional.userId = bindId
 
             const assistant = await ctx.chatluna_assistant.getAssistantById(
+                bindId,
                 conversationTemplate.assistantId
             )
 
