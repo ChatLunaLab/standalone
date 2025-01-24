@@ -12,10 +12,8 @@
     path: ./data/chatluna.db
 - id: 1z9m0q
   name: '@chatluna/standalone'
-  disabled: false
 - id: 0jt7zk
   name: '@chatluna/server'
-  disabled: false
 - id: 3j9z0q
   name: '@cordisjs/plugin-http'
 - id: 4e9z0q

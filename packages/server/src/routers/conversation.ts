@@ -209,6 +209,7 @@ export function apply(ctx: Context, config: Config) {
 
             const userConversation =
                 await ctx.chatluna_conversation.resolveUserConversation(
+                    bindId,
                     conversationId
                 )
             koa.set('Content-Type', 'application/json')
