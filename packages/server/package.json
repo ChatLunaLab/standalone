@@ -55,6 +55,7 @@
         "@chatluna/memory": "^0.0.1",
         "@chatluna/service": "^0.0.1",
         "@cordisjs/plugin-server": "^0.2.5",
+
         "cordis": "^3.18.1"
     },
     "cordis": {
@@ -72,8 +73,8 @@
     "dependencies": {
         "@chatluna/utils": "^0.0.1",
         "@koa/cors": "^5.0.0",
+        "cortexluna": "^0.0.1",
         "jsonwebtoken": "^9.0.2",
-        "@langchain/core": "^0.3.30",
         "koa-jwt": "^4.0.4"
     }
 }

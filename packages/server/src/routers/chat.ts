@@ -7,11 +7,7 @@ import type {} from '@chatluna/assistant/service'
 import { ChatLunaConversationUser } from '@chatluna/memory/types'
 import { Assistant } from '@chatluna/assistant'
 import { PassThrough } from 'stream'
-import {
-    BaseMessageChunk,
-    HumanMessage,
-    MessageFieldWithRole
-} from '@langchain/core/messages'
+import { BaseMessageChunk } from 'cortexluna'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.post(
@@ -23,7 +19,7 @@ export function apply(ctx: Context, config: Config) {
             const conversationId = koa.params.conversationId
 
             const body = koa.request.body as {
-                message: MessageFieldWithRole
+                message: BaseMessageChunk
             }
 
             if (!body.message) {
@@ -113,9 +109,10 @@ export function apply(ctx: Context, config: Config) {
             })
 
             for await (const chunk of assistant.stream({
-                message: new HumanMessage({
+                message: {
+                    role: 'user',
                     content: body.message.content
-                }),
+                },
                 signal: abortSignal.signal,
                 /* events: {
                     'llm-used-token'(usedToken) {
@@ -192,6 +189,7 @@ function buildResponse(
     finish?: string
 ) {
     // 'chatcmpl-6ptKyqKOGXZT6iQnqiXAH8adNLUzD'
+    // TODO: show thought
     const chatMessageId = 'chatcmpl-' + crypto.randomUUID()
 
     const response = {

@@ -21,8 +21,6 @@
 - id: z14z0q
   name: '@dingyi222666/event-stream'
 - id: 0t2z3d
-  name: '@chatluna/adapter-openai'
+  name: '@cortexluna/openai-compatible'
   config:
-    apiKeys:
-      - - ${{ env.OPENAI_API_KEY }}
-        - ${{ env.OPENAI_API_ENDPOINT }}
+    apiKeys: []

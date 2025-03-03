@@ -1,7 +1,6 @@
 import { Context, Schema } from 'cordis'
 import { inject as injectMemory } from '@chatluna/memory'
 import { inject as injectChat } from '@chatluna/chat'
-import { inject as injectService } from '@chatluna/service'
 import {} from '@cordisjs/plugin-server'
 import { ChatLunaServerDataBaseService } from '@chatluna/server/database'
 import { apply as applyAuth } from './routers/auth.ts'
@@ -40,8 +39,8 @@ export function apply(ctx: Context, config: Config) {
 export const inject = [
     ...injectMemory,
     ...injectChat,
-    ...injectService,
     'server',
+    'cortex_luna',
     'chatluna_user',
     'chatluna_assistant',
     'chatluna_conversation'

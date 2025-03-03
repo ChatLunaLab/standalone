@@ -4,10 +4,9 @@ import * as memory from '@chatluna/memory'
 import type {} from '@chatluna/memory/service'
 import * as assistant from '@chatluna/assistant'
 // import { apply as applyChat, inject as injectChat } from '@chatluna/chat'
-import * as service from '@chatluna/service'
+import * as cortexluna from 'cortexluna'
 import type {} from '@cordisjs/plugin-http'
 import type {} from '@cordisjs/plugin-proxy-agent'
-import { ChatLunaChatModel } from '@chatluna/core/model'
 
 /**
  *
@@ -22,7 +21,7 @@ export function apply(ctx: Context, config: Config) {
 
     ctx.plugin(assistant)
 
-    ctx.plugin(service)
+    ctx.plugin(cortexluna)
 
     ctx.inject(
         [
@@ -33,10 +32,6 @@ export function apply(ctx: Context, config: Config) {
         ],
         (ctx) => {
             ctx.on('ready', async () => {
-                await ctx.chatluna_platform.waitPlatform('openai')
-
-                await ctx.chatluna_preset.init(config.presetDir)
-
                 try {
                     await ctx.chatluna_conversation.getAssistantByName('雌小鬼')
                 } catch {
@@ -50,14 +45,6 @@ export function apply(ctx: Context, config: Config) {
                         ownerId: 'admin'
                     })
                 }
-
-                const model = await ctx.chatluna
-                    .createModel('openai/gpt-4o')
-                    .then((model) => model as ChatLunaChatModel)
-
-                /*  const result = await model.invoke('tell me a joke.')
-
-            console.log(result) */
             })
         }
     )

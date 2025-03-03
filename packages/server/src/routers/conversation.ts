@@ -2,15 +2,15 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
 import jwt from 'koa-jwt'
-import { getMessageContent, sha1 } from '@chatluna/utils'
+import { sha1 } from '@chatluna/utils'
 import type {} from '@chatluna/memory/service'
 import type {} from '@chatluna/assistant/service'
+import type {} from '@chatluna/core/service'
 import {
     ChatLunaConversationTemplate,
     ChatLunaConversationUser
 } from '@chatluna/memory/types'
-import { ModelType } from '@chatluna/core/platform'
-import { SystemMessage, HumanMessage } from '@langchain/core/messages'
+import { BaseMessage, generateText } from 'cortexluna'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(
@@ -244,10 +244,7 @@ export function apply(ctx: Context, config: Config) {
 
             const modelName = conversation.model ?? assistant.model
 
-            const model = await ctx.chatluna_platform.randomModel(
-                modelName,
-                ModelType.llm
-            )
+            const model = ctx.cortex_luna.languageModel(modelName)
 
             const preset = await ctx.chatluna_preset.getPreset(assistant.preset)
 
@@ -259,32 +256,36 @@ export function apply(ctx: Context, config: Config) {
                     })
                 )
 
-            const summaryTitlePrompt = SUMMARY_TITLE_PROMPT_LIST.map(
-                (prompt, index) => {
+            const summaryTitlePrompt: BaseMessage[] =
+                SUMMARY_TITLE_PROMPT_LIST.map((prompt, index) => {
                     if (index === 0) {
-                        return new SystemMessage(prompt)
+                        return {
+                            role: 'system',
+                            content: prompt
+                        }
                     }
 
-                    return new HumanMessage(
-                        prompt
+                    return {
+                        role: 'user',
+                        content: prompt
                             .replaceAll('{conversation}', messages.join('\n'))
                             .replaceAll(
                                 '{systemInstruction}',
                                 preset.messages
                                     .map(
                                         (message) =>
-                                            `<${message.getType()}> ${message.content} </${message.getType()}>`
+                                            `<${message.role}> ${message.content} </${message.role}>`
                                     )
                                     .join('\n')
                             )
-                    )
-                }
-            )
+                    }
+                })
 
             try {
-                const summaryTitle = await model
-                    .invoke(summaryTitlePrompt)
-                    .then((message) => getMessageContent(message.content))
+                const { text: summaryTitle } = await generateText({
+                    model,
+                    prompt: summaryTitlePrompt
+                })
 
                 await ctx.chatluna_conversation.updateConversation(
                     conversationId,
