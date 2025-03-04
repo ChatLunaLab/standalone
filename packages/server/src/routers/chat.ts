@@ -235,7 +235,7 @@ function buildResponse(
             {
                 delta: removeNullValues({
                     role: 'assistant',
-                    content: textContent.length > 0 ? textContent : undefined,
+                    content: textContent.length > 0 ? textContent : '',
                     reasoning_content:
                         reasoningContent.length > 0
                             ? reasoningContent
