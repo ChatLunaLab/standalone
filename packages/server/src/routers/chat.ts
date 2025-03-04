@@ -1,7 +1,7 @@
 import { Context } from 'cordis'
 import { Config } from '../index.ts'
 import jwt from 'koa-jwt'
-import { sha1 } from '@chatluna/utils'
+import { removeNullValues, sha1 } from '@chatluna/utils'
 import type {} from '@chatluna/memory/service'
 import type {} from '@chatluna/assistant/service'
 import { ChatLunaConversationUser } from '@chatluna/memory/types'
@@ -125,9 +125,13 @@ export function apply(ctx: Context, config: Config) {
                 } */
                 stream: true
             })) {
-                stream.write(
-                    `data: ${JSON.stringify(buildResponse(assistant, chunk, streamDelta))}\n\n`
+                const responseChunk = buildResponse(
+                    assistant,
+                    chunk,
+                    streamDelta
                 )
+
+                stream.write(`data: ${JSON.stringify(responseChunk)}\n\n`)
             }
 
             stream.write('data: [DONE]\n\n')
@@ -229,7 +233,7 @@ function buildResponse(
     const response = {
         choices: [
             {
-                delta: {
+                delta: removeNullValues({
                     role: 'assistant',
                     content: textContent.length > 0 ? textContent : undefined,
                     reasoning_content:
@@ -249,7 +253,7 @@ function buildResponse(
                           )
                         : undefined,
                     finish_reason: chunk.metadata?.finish_reason
-                },
+                }),
                 index: 0
             }
         ],
@@ -258,6 +262,10 @@ function buildResponse(
         id: chatMessageId,
         model: assistant.model,
         object: 'chat.completion.chunk'
+    }
+
+    if (chunk.metadata == null) {
+        delete response.metadata
     }
 
     return response

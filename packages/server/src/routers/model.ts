@@ -2,6 +2,7 @@ import { Context } from 'cordis'
 import { Config } from '../index.ts'
 import jwt from 'koa-jwt'
 import { sha1 } from '@chatluna/utils'
+import { PlatformModelInfo } from 'cortexluna'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.get(
@@ -16,13 +17,17 @@ export function apply(ctx: Context, config: Config) {
             koa.body = JSON.stringify({
                 code: 0,
                 data: models.map((modelInfo) => {
-                    modelInfo.name = `${modelInfo.provider}:${modelInfo.name}`
-                    delete modelInfo.provider
+                    const newModelInfo: Writeable<PlatformModelInfo> =
+                        Object.assign({}, modelInfo)
+                    newModelInfo.name = `${newModelInfo.provider}:${newModelInfo.name}`
+                    delete newModelInfo.provider
 
-                    return modelInfo
+                    return newModelInfo
                 })
             })
             koa.status = 200
         }
     )
 }
+
+type Writeable<T> = { -readonly [P in keyof T]: T[P] }
