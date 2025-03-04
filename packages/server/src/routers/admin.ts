@@ -47,13 +47,12 @@ export function apply(ctx: Context, config: Config) {
             return await next()
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
-            ctx.logger.error(err)
-
             if (err.message === 'Authentication Error') {
                 koa.status = 401
             } else {
                 koa.status = 500
                 koa.body = 'Unknown error'
+                ctx.logger.error(err)
             }
         }
     })

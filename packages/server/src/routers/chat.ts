@@ -7,7 +7,7 @@ import type {} from '@chatluna/assistant/service'
 import { ChatLunaConversationUser } from '@chatluna/memory/types'
 import { Assistant } from '@chatluna/assistant'
 import { PassThrough } from 'stream'
-import { BaseMessageChunk } from 'cortexluna'
+import { BaseMessageChunk, ToolCallPart, ToolResultPart } from 'cortexluna'
 
 export function apply(ctx: Context, config: Config) {
     ctx.server.post(
@@ -104,10 +104,14 @@ export function apply(ctx: Context, config: Config) {
 
             const abortSignal = new AbortController()
 
-            koa.req.on('close', () => {
+            const contextDisposable = ctx.on('dispose', () => {
                 abortSignal.abort()
             })
 
+            const streamDelta = {
+                toolResultIndex: -1,
+                toolCallIndex: -1
+            }
             for await (const chunk of assistant.stream({
                 message: {
                     role: 'user',
@@ -122,13 +126,15 @@ export function apply(ctx: Context, config: Config) {
                 stream: true
             })) {
                 stream.write(
-                    `data: ${JSON.stringify(buildResponse(assistant, chunk))}\n\n`
+                    `data: ${JSON.stringify(buildResponse(assistant, chunk, streamDelta))}\n\n`
                 )
             }
 
             stream.write('data: [DONE]\n\n')
 
             stream.end()
+
+            contextDisposable()
         }
     )
 
@@ -183,25 +189,71 @@ export function apply(ctx: Context, config: Config) {
     )
 }
 
+type StreamDelta = {
+    toolResultIndex: number
+    toolCallIndex: number
+}
+
 function buildResponse(
     assistant: Assistant,
     chunk: BaseMessageChunk,
-    finish?: string
+    streamDelta: StreamDelta
 ) {
     // 'chatcmpl-6ptKyqKOGXZT6iQnqiXAH8adNLUzD'
     // TODO: show thought
     const chatMessageId = 'chatcmpl-' + crypto.randomUUID()
+
+    let textContent = ''
+    let reasoningContent = ''
+    let toolCallPart: ToolCallPart
+    let toolResultPart: ToolResultPart
+
+    if (typeof chunk.content === 'string') {
+        textContent = chunk.content
+    } else {
+        for (const part of chunk.content) {
+            if (part.type === 'text') {
+                textContent += part.text
+            } else if (part.type === 'think') {
+                reasoningContent += part.think
+            } else if (part.type === 'tool-call') {
+                toolCallPart = part
+                streamDelta.toolCallIndex++
+            } else if (part.type === 'tool-result') {
+                toolResultPart = part
+                streamDelta.toolResultIndex++
+            }
+        }
+    }
 
     const response = {
         choices: [
             {
                 delta: {
                     role: 'assistant',
-                    content: chunk.content
+                    content: textContent.length > 0 ? textContent : undefined,
+                    reasoning_content:
+                        reasoningContent.length > 0
+                            ? reasoningContent
+                            : undefined,
+                    tool_calls: toolCallPart
+                        ? transformToolCallPartToOpenAIFormat(
+                              toolCallPart,
+                              streamDelta.toolCallIndex
+                          )
+                        : undefined,
+                    tool_results: toolResultPart
+                        ? transformToolResultPartToOpenAIFormat(
+                              toolResultPart,
+                              streamDelta.toolResultIndex
+                          )
+                        : undefined,
+                    finish_reason: chunk.metadata?.finish_reason
                 },
                 index: 0
             }
         ],
+        metadata: chunk.metadata,
         created: Date.now(),
         id: chatMessageId,
         model: assistant.model,
@@ -209,4 +261,35 @@ function buildResponse(
     }
 
     return response
+}
+
+function transformToolCallPartToOpenAIFormat(
+    toolCallPart: ToolCallPart,
+    index: number
+) {
+    return {
+        index,
+        id: toolCallPart.toolCallId,
+        type: 'function',
+        function: {
+            name: toolCallPart.toolName,
+            arguments: JSON.stringify(toolCallPart.args)
+        }
+    }
+}
+
+function transformToolResultPartToOpenAIFormat(
+    toolResultPart: ToolResultPart,
+    index: number
+) {
+    return {
+        index,
+        id: toolResultPart.toolCallId,
+        type: 'function-result',
+        function: {
+            name: toolResultPart.toolName,
+            arguments: JSON.stringify(toolResultPart.arg),
+            content: JSON.stringify(toolResultPart.result)
+        }
+    }
 }

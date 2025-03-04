@@ -242,6 +242,7 @@ export function apply(ctx: Context, config: Config) {
                 return
             }
 
+            console.log(`current model:`, conversation.model, assistant.model)
             const modelName = conversation.model ?? assistant.model
 
             const model = ctx.cortex_luna.languageModel(modelName)

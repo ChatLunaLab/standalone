@@ -43,7 +43,8 @@ export const inject = [
     'cortex_luna',
     'chatluna_user',
     'chatluna_assistant',
-    'chatluna_conversation'
+    'chatluna_conversation',
+    'chatluna_preset'
 ].filter((item, index, self) => self.indexOf(item, 0) === index)
 
 export interface Config {

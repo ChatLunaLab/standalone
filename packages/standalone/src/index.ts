@@ -24,12 +24,7 @@ export function apply(ctx: Context, config: Config) {
     ctx.plugin(cortexluna)
 
     ctx.inject(
-        [
-            'chatluna',
-            'chatluna_platform',
-            'chatluna_preset',
-            'chatluna_conversation'
-        ],
+        ['chatluna', 'chatluna_preset', 'chatluna_conversation'],
         (ctx) => {
             ctx.on('ready', async () => {
                 try {
