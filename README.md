@@ -1,6 +1,6 @@
 # ChatLuna Standalone
 
-独立版 ChatLuna 后端，基于 Cordis 构建。
+独立 ChatLuna 后端，基于 Cordis 构建。
 
 ## 项目结构
 
@@ -16,7 +16,7 @@
 
 感谢 [cordis](https://github.com/cordiverse/cordis)。本项目大量使用了其相关生态的库。
 
-感谢 [LangChain](https://github.com/langchain-ai/langchainjs) 项目。本项目基于其进行二次封装。
+感谢 [CortexLuna](https://github.com/ChatLunaLab/cortexluna) 项目。本项目基于其进行二次封装。
 
 最后感谢所有 ChatLuna 的贡献者和用户，没有你们的支持，ChatLuna 就不会继续向前发展。
 
